@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   webapp:
-    image: django-deploy_webapp:version-1
+    image: django-deploy_webapp
     build:
       context: .
     # command: gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4

@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "Connecting to ECR..."
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+  build:
+    commands:
+      - echo "Build and start Docker containers"
+      - docker-compose up --build -d
+
+  post_build:
+    commands:
+      - echo "Stop Docker container"
+      - docker-compose stop
+      - docker tag django-deploy_webapp:latest $ECR_REPO_URI
+      - echo "Push the Docker image to ECR"
+      - docker push $ECR_REPO_URI
+      - cd ..
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $ECR_REPO_URI:latest > imagedefinitions.json
+      - pwd; ls -al; cat imagedefinitions.json
+
+artifacts:
+    files:
+      - imagedefinitions.json
