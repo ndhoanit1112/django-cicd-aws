@@ -1,12 +1,14 @@
 version: '3.8'
 services:
-  web:
+  webapp:
+    image: django-deploy_webapp:version-1
     build:
       context: .
-    command: gunicorn --bind 0.0.0.0:8000 my_project.wsgi --workers=4
+    # command: gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4
     volumes:
       - static_volume:/app/static
       - media_volume:/app/media
+      - gunicorn:/var/run/gunicorn
     expose:
       - "8000"
     networks:
@@ -14,18 +16,23 @@ services:
   nginx:
     build: nginx
     restart: always
+    # command: [nginx, '-g', 'daemon off;']
+    # command: [nginx, '-g', 'daemon off;', '-c', '/etc/nginx/nginx.conf']
     volumes:
       - static_volume:/app/static
       - media_volume:/app/media
+      - gunicorn:/var/run/gunicorn
     ports:
       - "80:80"
     depends_on:
-      - web
+      - webapp
     networks:
       - django-network
 networks:
   django-network:
     name: django-network
 volumes:
+  gunicorn:
+    driver: local
   media_volume:
   static_volume:

@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM python:3.8-slim
+FROM --platform=linux/amd64 python:3.8-slim
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -21,5 +21,9 @@ COPY . /app
 
 EXPOSE 8000
 
+RUN mkdir -p /var/run/gunicorn
+VOLUME gunicorn:/var/run/gunicorn
+
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4
