@@ -8,4 +8,4 @@ class ViewsTestCase(TestCase):
         """The index page loads properly"""
         print("Test index page loads properly...")
         response = self.client.get(f'http+{self.SOCKET_PATH}/polls/')
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
