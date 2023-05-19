@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   webapp:
+    container_name: django-deploy_webapp
     image: django-deploy_webapp
     build:
       context: .

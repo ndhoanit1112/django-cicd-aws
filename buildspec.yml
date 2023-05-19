@@ -13,7 +13,13 @@ phases:
 
   post_build:
     commands:
-      - echo "Stop Docker container"
+      - echo "Stop Docker containers"
+      - docker-compose stop
+      - echo "Start Docker containers again"
+      - docker-compose up -d
+      - echo "Run unit tests"
+      - docker exec django-deploy_webapp python3 /app/manage.py test
+      - echo "Stop Docker containers"
       - docker-compose stop
       - docker tag django-deploy_webapp:latest $ECR_REPO_URI
       - echo "Push the Docker image to ECR"
