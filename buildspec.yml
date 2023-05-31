@@ -29,20 +29,20 @@ phases:
     commands:
       - echo "Stop Docker containers"
       - docker-compose stop
-      - echo "Start Docker containers again"
-      - docker-compose up -d
       - echo "Run unit tests"
       - docker exec django-deploy_webapp python3 /app/manage.py test
-      - echo "Stop Docker containers"
-      - docker-compose stop
       - docker tag django-deploy_webapp:latest $ECR_REPO_URI
       - echo "Push the Docker image to ECR"
       - docker push $ECR_REPO_URI
-      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $ECR_REPO_URI:latest > imagedefinitions.json
-      - pwd; ls -al; cat imagedefinitions.json
+      - echo "Start Docker containers again"
+      - docker-compose up -d
       - echo "Update DB"
       - docker exec django-deploy_webapp python manage.py makemigrations
       - docker exec django-deploy_webapp python manage.py migrate
+      - echo "Stop Docker containers"
+      - docker-compose stop
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $ECR_REPO_URI:latest > imagedefinitions.json
+      - pwd; ls -al; cat imagedefinitions.json
 
 artifacts:
     files:
