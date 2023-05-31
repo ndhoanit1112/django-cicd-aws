@@ -29,13 +29,13 @@ phases:
     commands:
       - echo "Stop Docker containers"
       - docker-compose stop
+      - echo "Start Docker containers again"
+      - docker-compose up -d
       - echo "Run unit tests"
       - docker exec django-deploy_webapp python3 /app/manage.py test
       - docker tag django-deploy_webapp:latest $ECR_REPO_URI
       - echo "Push the Docker image to ECR"
       - docker push $ECR_REPO_URI
-      - echo "Start Docker containers again"
-      - docker-compose up -d
       - echo "Update DB"
       - docker exec django-deploy_webapp python manage.py makemigrations
       - docker exec django-deploy_webapp python manage.py migrate
