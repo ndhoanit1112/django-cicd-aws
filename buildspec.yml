@@ -5,6 +5,20 @@ phases:
     commands:
       - echo "Connecting to ECR..."
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - echo "Link docker-compose.yml"
+      - ln -sf docker-compose.prod.yml docker-compose.yml
+      - echo "Link settings.py"
+      - cd app
+      - ln -sf settings_production.py settings.py
+      - cd ../
+      - echo "Prepare env"
+      - touch .env
+      - echo "DB_NAME=$DB_NAME" >> .env
+      - echo "DB_USER=$DB_USER" >> .env
+      - echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+      - echo "DB_HOST=$DB_HOST" >> .env
+      - echo "DB_PORT=$DB_PORT" >> .env
+      - echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" >> .env
 
   build:
     commands:
@@ -26,6 +40,9 @@ phases:
       - docker push $ECR_REPO_URI
       - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $ECR_REPO_URI:latest > imagedefinitions.json
       - pwd; ls -al; cat imagedefinitions.json
+      - echo "Update DB"
+      - docker exec django-deploy_webapp python manage.py makemigrations
+      - docker exec django-deploy_webapp python manage.py migrate
 
 artifacts:
     files:
