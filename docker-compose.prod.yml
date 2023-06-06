@@ -5,7 +5,7 @@ services:
     image: django-deploy_webapp
     build:
       context: .
-    # command: gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4
+    command: gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4
     volumes:
       - static_volume:/app/static
       - media_volume:/app/media
@@ -26,6 +26,19 @@ services:
     ports:
       - "80:80"
     depends_on:
+      - webapp
+    networks:
+      - django-network
+  celery:
+    container_name: django-deploy_celery
+    image: django-deploy_celery
+    build:
+      context: .
+    volumes:
+      - .:/usr/src/app
+    command: celery -A app worker -l INFO -Q dfqueue
+    depends_on:
+      - db
       - webapp
     networks:
       - django-network
