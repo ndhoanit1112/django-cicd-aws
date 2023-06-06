@@ -19,6 +19,9 @@ phases:
       - echo "DB_HOST=$DB_HOST" >> .env
       - echo "DB_PORT=$DB_PORT" >> .env
       - echo "DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY" >> .env
+      - echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env
+      - echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
+      - echo "AWS_REGION=$AWS_REGION" >> .env
 
   build:
     commands:
