@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update
 # RUN sudo apt-get install mysql-server
-RUN apt-get install -y libssl-dev
+RUN apt-get install -y libcurl4-openssl-dev libssl-dev
 RUN apt-get install python3-dev default-libmysqlclient-dev gcc  -y
 
 # Install pip requirements
@@ -26,4 +26,4 @@ VOLUME gunicorn:/var/run/gunicorn
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-CMD gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4
+# CMD gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4

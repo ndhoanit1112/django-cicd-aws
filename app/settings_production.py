@@ -22,3 +22,18 @@ DATABASES = {
         "OPTIONS": {"charset": "utf8mb4"},
     }
 }
+
+from kombu.utils.url import safequote
+
+aws_access_key = safequote(env('AWS_ACCESS_KEY_ID'))
+aws_secret_key = safequote(env('AWS_SECRET_ACCESS_KEY'))
+
+CELERY_BROKER_URL = "sqs://{aws_access_key}:{aws_secret_key}@".format(
+    aws_access_key=aws_access_key, aws_secret_key=aws_secret_key,
+)
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    "region": env("AWS_REGION"),
+    'queue_name_prefix': 'django-',
+    'visibility_timeout': 7200,
+    'polling_interval': 1
+}
