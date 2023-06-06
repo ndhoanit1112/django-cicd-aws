@@ -5,7 +5,7 @@ services:
     image: django-deploy_webapp
     build:
       context: .
-    command: gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4
+    # command: gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4
     volumes:
       - static_volume:/app/static
       - media_volume:/app/media
