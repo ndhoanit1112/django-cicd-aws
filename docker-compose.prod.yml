@@ -38,7 +38,6 @@ services:
       - .:/usr/src/app
     command: celery -A app worker -l INFO -Q dfqueue
     depends_on:
-      - db
       - webapp
     networks:
       - django-network
