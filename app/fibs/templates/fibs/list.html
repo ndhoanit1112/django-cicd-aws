@@ -1,0 +1,59 @@
+<html>
+    <head></head>
+    <body>
+        <h3>FIBONACCI CALCULATOR</h3>
+        <b>Calculate new value:</b>
+        <form method="post">
+            {% csrf_token %}
+            <label for="fib_number">
+            <input type="number" name="number" id="number">
+            <input type="submit" value="Submit">
+        </form>
+        <hr>
+        <b>List of submitted values:</b>
+        <div style="display:block; width:100%;">
+            <div style="width:50%; float: left;">
+                <ul>
+                    {% for result in results|slice:":8" %}
+                    <li>{{ result.id }} - Started at {{ result.created }}
+                        <ul>
+                            <li>Status: {{ result.status }}</li>
+                            <li>Input: {{ result.input }}</li>
+                            <li>Output:
+                                {% if result.result %}
+                                    {{ result.result }}
+                                {% else %}
+                                    Calculating...
+                                {% endif %}
+                            </li>
+                            <li>Message: {{ result.message }}
+                            </li>
+                        </ul>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div style="width:50%; float: left;">
+                <ul>
+                    {% for result in results|slice:"8:" %}
+                        <li>{{ result.id }} - Started at {{ result.created }}
+                            <ul>
+                                <li>Status: {{ result.status }}</li>
+                                <li>Input: {{ result.input }}</li>
+                                <li>Output:
+                                    {% if result.result %}
+                                        {{ result.result }}
+                                    {% else %}
+                                        Calculating...
+                                    {% endif %}
+                                </li>
+                                <li>Message: {{ result.message }}
+                                </li>
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>
