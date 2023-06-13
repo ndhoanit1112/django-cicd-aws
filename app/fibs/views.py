@@ -7,8 +7,11 @@ from app.fibs.models import FibResult
 
 def index(request):
     if request.method == "GET":
-        results = FibResult.objects.order_by("-id")[:15]
-        context = {'results': results}
+        results = FibResult.objects.order_by("-id")[:16]
+        context = {
+            'results': results,
+            'status_error': FibResult.STATUS_ERROR
+        }
         return render(request, 'fibs/list.html', context=context)
 
     if request.method == "POST":

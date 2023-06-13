@@ -1,5 +1,11 @@
 <html>
-    <head></head>
+    <head>
+        <style>
+            li.result-item:not(:last-child) {
+                margin-bottom: 15px;
+            }
+        </style>
+    </head>
     <body>
         <h3>FIBONACCI CALCULATOR</h3>
         <b>Calculate new value:</b>
@@ -15,18 +21,21 @@
             <div style="width:50%; float: left;">
                 <ul>
                     {% for result in results|slice:":8" %}
-                    <li>{{ result.id }} - Started at {{ result.created }}
+                    <li class="result-item">{{ result.id }} - Started at {{ result.created|date:"r" }}
                         <ul>
                             <li>Status: {{ result.status }}</li>
                             <li>Input: {{ result.input }}</li>
                             <li>Output:
                                 {% if result.result %}
                                     {{ result.result }}
+                                {% elif result.status == status_error %}
+                                    Undefined
                                 {% else %}
                                     Calculating...
                                 {% endif %}
                             </li>
                             <li>Message: {{ result.message }}
+                            <li>Updated at: {{ result.modified|date:"r" }}
                             </li>
                         </ul>
                     </li>
@@ -36,18 +45,21 @@
             <div style="width:50%; float: left;">
                 <ul>
                     {% for result in results|slice:"8:" %}
-                        <li>{{ result.id }} - Started at {{ result.created }}
+                        <li class="result-item">{{ result.id }} - Started at {{ result.created|date:"r" }}
                             <ul>
                                 <li>Status: {{ result.status }}</li>
                                 <li>Input: {{ result.input }}</li>
                                 <li>Output:
                                     {% if result.result %}
                                         {{ result.result }}
+                                    {% elif result.status == status_error %}
+                                        Undefined
                                     {% else %}
                                         Calculating...
                                     {% endif %}
                                 </li>
                                 <li>Message: {{ result.message }}
+                                <li>Updated at: {{ result.modified|date:"r" }}
                                 </li>
                             </ul>
                         </li>
