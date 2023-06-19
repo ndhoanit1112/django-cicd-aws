@@ -33,7 +33,7 @@ CELERY_BROKER_URL = "sqs://{aws_access_key}:{aws_secret_key}@".format(
 )
 CELERY_BROKER_TRANSPORT_OPTIONS = {
     "region": env("AWS_SQS_REGION"),
-    'queue_name_prefix': 'django-',
+    'queue_name_prefix': 'django-deploy-',
     'visibility_timeout': 7200,
     'polling_interval': 1
 }
