@@ -9,7 +9,7 @@ phases:
       - ln -sf docker-compose.prod.yml docker-compose.yml
       - echo "Link settings.py"
       - cd app
-      - ln -sf settings_production.py settings.py
+      - ln -sf settings_prod.py settings.py
       - cd ../
       - echo "Prepare env"
       - touch .env
@@ -39,9 +39,9 @@ phases:
       - docker tag django-deploy_webapp:latest $WEB_ECR_REPO_URI
       - echo "Push webapp image to ECR"
       - docker push $WEB_ECR_REPO_URI
-      - docker tag django-deploy_celery:latest $ECR_CELERY_REPO_URI
+      - docker tag django-deploy_celery:latest $CELERY_ECR_REPO_URI
       - echo "Push celery image to ECR"
-      - docker push $ECR_CELERY_REPO_URI
+      - docker push $CELERY_ECR_REPO_URI
       - echo "Update DB"
       - docker exec django-deploy_webapp python manage.py makemigrations
       - docker exec django-deploy_webapp python manage.py migrate

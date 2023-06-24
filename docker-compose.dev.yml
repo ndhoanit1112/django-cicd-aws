@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  webapp:
+    container_name: django-deploy_webapp
+    image: django-deploy_webapp
+    build:
+      context: .
+    # command: gunicorn --bind=unix:/var/run/gunicorn/gunicorn.sock app.wsgi --workers=4
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - gunicorn:/var/run/gunicorn
+    expose:
+      - "8000"
+    networks:
+      - django-network
+  nginx:
+    build: nginx
+    restart: always
+    # command: [nginx, '-g', 'daemon off;']
+    # command: [nginx, '-g', 'daemon off;', '-c', '/etc/nginx/nginx.conf']
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - gunicorn:/var/run/gunicorn
+    ports:
+      - "80:80"
+    depends_on:
+      - webapp
+    networks:
+      - django-network
+  celery:
+    container_name: django-deploy_celery
+    image: django-deploy_celery
+    build:
+      context: .
+    volumes:
+      - .:/usr/src/app
+    command: celery -A app worker -l INFO -Q fib-queue
+    depends_on:
+      - webapp
+    networks:
+      - django-network
+networks:
+  django-network:
+    name: django-network
+volumes:
+  gunicorn:
+    driver: local
+  media_volume:
+  static_volume:
