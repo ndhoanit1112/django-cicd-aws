@@ -36,17 +36,23 @@ phases:
       - docker-compose up -d
       - echo "Run unit tests"
       - docker exec django-deploy_webapp python3 /app/manage.py test
-      - docker tag django-deploy_webapp:latest $ECR_REPO_URI
+      - docker tag django-deploy_webapp:latest $WEB_ECR_REPO_URI
       - echo "Push webapp image to ECR"
-      - docker push $ECR_REPO_URI
+      - docker push $WEB_ECR_REPO_URI
+      - docker tag django-deploy_celery:latest $ECR_CELERY_REPO_URI
+      - echo "Push celery image to ECR"
+      - docker push $ECR_CELERY_REPO_URI
       - echo "Update DB"
       - docker exec django-deploy_webapp python manage.py makemigrations
       - docker exec django-deploy_webapp python manage.py migrate
       - echo "Stop Docker containers"
       - docker-compose stop
-      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $ECR_REPO_URI:latest > imagedefinitions.json
+      - printf '[{"name":"%s","imageUri":"%s"}]' $WEB_CONTAINER_NAME $WEB_ECR_REPO_URI:latest > imagedefinitions.json
       - pwd; ls -al; cat imagedefinitions.json
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CELERY_CONTAINER_NAME $CELERY_ECR_REPO_URI:latest > imagedefinitions_celery.json
+      - pwd; ls -al; cat imagedefinitions_celery.json
 
 artifacts:
     files:
       - imagedefinitions.json
+      - imagedefinitions_celery.json
