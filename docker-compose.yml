@@ -51,7 +51,7 @@ services:
       context: .
     volumes:
       - .:/usr/src/app
-    command: celery -A app worker -l INFO -Q fib-queue
+    command: celery -A app worker -l DEBUG -Q fib-queue
     depends_on:
       - db
       - webapp
