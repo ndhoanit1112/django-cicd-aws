@@ -22,6 +22,8 @@ phases:
       - echo "AWS_SQS_ACCESS_KEY_ID=$AWS_SQS_ACCESS_KEY_ID" >> .env
       - echo "AWS_SQS_SECRET_ACCESS_KEY=$AWS_SQS_SECRET_ACCESS_KEY" >> .env
       - echo "AWS_SQS_REGION=$AWS_SQS_REGION" >> .env
+      - echo "CACHE_HOST=$CACHE_HOST" >> .env
+      - echo "CACHE_PORT=$CACHE_PORT" >> .env
 
   build:
     commands:
