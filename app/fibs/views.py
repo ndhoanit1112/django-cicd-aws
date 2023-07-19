@@ -3,6 +3,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from app.fibs.tasks import fib_task
 from app.fibs.models import FibResult
+from app.fibs.cache import FibCache
 
 
 def index(request):
@@ -23,7 +24,14 @@ def index(request):
             input=input,
             status=FibResult.STATUS_PENDING,
         )
-        
-        fib_task.delay(new_fib.id)
+
+        cache = FibCache()
+        result = cache.get(input)
+        if result is None:
+            fib_task.delay(new_fib.id)
+        else:
+            new_fib.result = result
+            new_fib.status = FibResult.STATUS_SUCCESS
+            new_fib.save()
 
         return redirect("index")

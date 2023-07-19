@@ -37,3 +37,10 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {
     'visibility_timeout': 7200,
     'polling_interval': 1
 }
+
+CACHES = {
+    'default': {
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+        'LOCATION': f'{MEMCACHED_HOST}:{MEMCACHED_PORT}',
+    }
+}

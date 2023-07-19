@@ -1,4 +1,5 @@
 from app.celery import app
+from app.fibs.cache import FibCache
 from app.fibs.models import FibResult
 
 def fib(n):
@@ -18,8 +19,12 @@ def fib_task(self, result_id):
     fib_result = FibResult.objects.get(pk=result_id)
 
     try:
-        fib_result.result = fib(fib_result.input)
+        result = fib(fib_result.input)
+        fib_result.result = result
         fib_result.status = FibResult.STATUS_SUCCESS
+
+        cache = FibCache()
+        cache.set(fib_result.input, result)
     except Exception as e:
         fib_result.status = FibResult.STATUS_ERROR
         fib_result.message = str(e)[:90]
