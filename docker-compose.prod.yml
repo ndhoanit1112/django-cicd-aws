@@ -10,6 +10,7 @@ services:
       - static_volume:/app/static
       - media_volume:/app/media
       - gunicorn:/var/run/gunicorn
+      - fake_efs:/app/app/fibs/temp
     expose:
       - "8000"
     networks:
@@ -35,7 +36,7 @@ services:
     build:
       context: .
     volumes:
-      - .:/usr/src/app
+      - fake_efs:/app/app/fibs/temp
     command: celery -A app worker -l INFO -Q fib-queue
     depends_on:
       - webapp
@@ -44,3 +45,10 @@ services:
 networks:
   django-network:
     name: django-network
+volumes:
+  gunicorn:
+    driver: local
+  fake_efs:
+    driver: local
+  media_volume:
+  static_volume:
