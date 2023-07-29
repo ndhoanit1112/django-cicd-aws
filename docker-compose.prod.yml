@@ -44,8 +44,3 @@ services:
 networks:
   django-network:
     name: django-network
-volumes:
-  gunicorn:
-    driver: local
-  media_volume:
-  static_volume:

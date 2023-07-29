@@ -4,6 +4,9 @@ from django.shortcuts import render, redirect
 from app.fibs.tasks import fib_task
 from app.fibs.models import FibResult
 from app.fibs.cache import FibCache
+import os
+from django.conf import settings
+import uuid
 
 
 def index(request):
@@ -29,6 +32,10 @@ def index(request):
         result = cache.get(input)
         if result is None:
             fib_task.delay(new_fib.id)
+            file_path = os.path.join(settings.BASE_DIR, f'app/fibs/temp/{new_fib.id}.txt')
+            with open(file_path, "w") as writer:
+                random_str = uuid.uuid4().hex
+                writer.write(f"{random_str} === {new_fib.id}")
         else:
             new_fib.result = result
             new_fib.status = FibResult.STATUS_SUCCESS
